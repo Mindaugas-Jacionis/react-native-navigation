@@ -148,14 +148,22 @@ function clearEventHandler(navigatorEventID) {
 }
 
 function handleDeepLink(params = {}) {
-  if (!params.link) return;
+  const { link, payload } = params;
+
+  if (!link) return;
+
   const event = {
     type: 'DeepLink',
-    link: params.link
+    link,
+    ...(payload ? { payload } : {})
   };
   for (let i in _allNavigatorEventHandlers) {
     _allNavigatorEventHandlers[i](event);
   }
+}
+
+async function isAppLaunched() {
+  return await platformSpecific.isAppLaunched();
 }
 
 export default {
@@ -173,5 +181,6 @@ export default {
   startSingleScreenApp: startSingleScreenApp,
   setEventHandler: setEventHandler,
   clearEventHandler: clearEventHandler,
-  handleDeepLink: handleDeepLink
+  handleDeepLink: handleDeepLink,
+  isAppLaunched: isAppLaunched
 };
